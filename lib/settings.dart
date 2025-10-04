@@ -2,12 +2,21 @@ import 'dart:developer';
 
 import 'package:data_type_detector/detector.dart';
 
+/// Represents a request to read a setting from storage.
 class SettingsReadRequest {
+  /// Path or key of the setting.
   final String path;
+
+  /// Expected data type of the setting.
   final DataType type;
+
+  /// Default value to return if the setting is missing.
   final Object? defaultValue;
+
+  /// Optional additional options for reading.
   final Object? options;
 
+  /// Private constructor used internally.
   const SettingsReadRequest._({
     required this.path,
     required this.defaultValue,
@@ -21,13 +30,24 @@ class SettingsReadRequest {
   }
 }
 
+/// Represents a request to write a setting to storage.
 class SettingsWriteRequest {
+  /// Path or key of the setting.
   final String path;
+
+  /// Value to write.
   final Object? value;
+
+  /// Detected type of the value.
   final DataType type;
+
+  /// All current properties for context.
   final Map<String, dynamic> props;
+
+  /// Optional additional options for writing.
   final Object? options;
 
+  /// Private constructor used internally.
   const SettingsWriteRequest._({
     required this.path,
     required this.value,
@@ -42,45 +62,62 @@ class SettingsWriteRequest {
   }
 }
 
+/// Response for a settings backup or fetch operation.
 class SettingsBackupResponse {
+  /// The fetched or backed-up data.
   final Map<String, dynamic>? _data;
+
+  /// Error message if the operation failed.
   final String? error;
 
+  /// Successful response.
   const SettingsBackupResponse.ok(Map<String, dynamic> value)
       : _data = value,
         error = null;
 
+  /// Failed response.
   const SettingsBackupResponse.failure(this.error) : _data = null;
 }
 
+/// Delegate interface for providing custom storage mechanisms.
 abstract class SettingsDelegate {
+  /// Backup a setting.
   bool backup(SettingsWriteRequest request);
 
+  /// Fetch a cached value for a setting.
   Object? cache(SettingsReadRequest request);
 
+  /// Clean all settings in storage.
   Future<void> clean();
 
+  /// Fetch all settings from storage.
   Future<SettingsBackupResponse> get();
 
+  /// Set a value in storage.
   Future<void> set(SettingsWriteRequest request);
 }
 
+/// Singleton manager for application settings.
 class Settings {
   Settings._();
 
   static Settings? _i;
 
+  /// Singleton instance.
   static Settings get i => _i ??= Settings._();
 
   bool _showLogs = false;
   Map<String, dynamic> _props = {};
-
   SettingsDelegate? _delegate;
-
   bool initialized = false;
 
   bool get _local => _delegate == null;
 
+  /// Initialize the settings manager.
+  ///
+  /// [showLogs] enables logging.
+  /// [initial] provides initial key/value pairs.
+  /// [delegate] provides a custom storage mechanism.
   static Future<void> init({
     bool showLogs = false,
     Map<String, dynamic>? initial,
@@ -93,16 +130,19 @@ class Settings {
     await load();
   }
 
+  /// Executes a callback on the singleton instance.
   static T _execute<T>(T Function(Settings) callback) {
     if (i.initialized) return callback(i);
     throw "$Settings hasn't initialized yet!";
   }
 
+  /// Logs a message if logging is enabled.
   static void _log(Object? msg) {
     if (!i._showLogs) return;
     log(msg.toString(), name: "$Settings");
   }
 
+  /// Load settings from the delegate (if provided) into local cache.
   static Future<void> load() async {
     try {
       if (i._delegate == null) return;
@@ -114,6 +154,7 @@ class Settings {
     }
   }
 
+  /// Clear all settings.
   static Future<bool> clear() async {
     try {
       if (i._delegate != null) await i._delegate!.clean();
@@ -125,6 +166,10 @@ class Settings {
     }
   }
 
+  /// Get a value for a given [key].
+  ///
+  /// Returns [defaultValue] if not found or type mismatches.
+  /// Optional [options] can be passed for delegate-specific behavior.
   static T get<T>(String key, T defaultValue, {Object? options}) {
     try {
       if (i._local) {
@@ -154,6 +199,9 @@ class Settings {
     }
   }
 
+  /// Set a value for a given [key].
+  ///
+  /// Returns true if successfully set locally or via delegate.
   static bool set(String key, Object? value, {Object? options}) {
     try {
       i._props[key] = value;
@@ -176,6 +224,7 @@ class Settings {
     }
   }
 
+  /// Increment a numeric setting by [value].
   static bool increment(String key, num value, {Object? options}) {
     try {
       value = value + get(key, 0, options: options);
@@ -186,6 +235,7 @@ class Settings {
     }
   }
 
+  /// Add elements to a list setting, avoiding duplicates.
   static bool arrayUnion(String key, Iterable value, {Object? options}) {
     try {
       Set current = Set.of(get(key, [], options: options));
@@ -197,6 +247,7 @@ class Settings {
     }
   }
 
+  /// Remove elements from a list setting.
   static bool arrayRemove(String key, Iterable value, {Object? options}) {
     try {
       Set current = Set.of(get(key, [], options: options));
