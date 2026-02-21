@@ -1,7 +1,8 @@
-## 1.0.1
+## 1.0.2
 
 - Lazy mode supported
 
+## 1.0.1
 ## 1.0.0
 
 - Singleton manager for app-wide settings.

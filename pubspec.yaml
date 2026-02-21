@@ -1,6 +1,6 @@
 name: in_app_settings
 description: "A Flutter/Dart singleton manager for in-app settings with automatic type detection, supporting primitives, collections, maps, JSON, and optional custom storage delegates."
-version: 1.0.1
+version: 1.0.2
 repository: https://github.com/Mohiuddin655-PUB/in_app_settings
 
 environment:
