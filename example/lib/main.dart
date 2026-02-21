@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:in_app_settings/settings.dart';
+import 'package:in_app_settings/in_app_settings.dart';
 
 /// Example delegate storing settings in memory.
 class MySettingsDelegate implements SettingsDelegate {

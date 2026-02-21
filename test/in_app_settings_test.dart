@@ -1,6 +1,6 @@
 import 'package:data_type_detector/detector.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:in_app_settings/settings.dart';
+import 'package:in_app_settings/in_app_settings.dart';
 
 /// A simple in-memory delegate for testing purposes.
 class TestSettingsDelegate implements SettingsDelegate {
