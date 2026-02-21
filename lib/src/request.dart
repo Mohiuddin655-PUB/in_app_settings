@@ -1,4 +1,4 @@
-part of 'delegate.dart';
+import 'package:data_type_detector/detector.dart';
 
 /// Represents a request to read a setting from storage.
 class SettingsReadRequest {

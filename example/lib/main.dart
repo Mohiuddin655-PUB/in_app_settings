@@ -17,7 +17,7 @@ class MySettingsDelegate implements SettingsDelegate {
   }
 
   @override
-  Future<void> clean() async => _store.clear();
+  Future<void> clean(Iterable<String> keys) async => _store.clear();
 
   @override
   Future<SettingsBackupResponse> get() async {

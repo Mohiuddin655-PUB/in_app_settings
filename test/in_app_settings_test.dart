@@ -18,7 +18,7 @@ class TestSettingsDelegate implements SettingsDelegate {
   }
 
   @override
-  Future<void> clean() async {
+  Future<void> clean(Iterable<String> keys) async {
     _store.clear();
   }
 
